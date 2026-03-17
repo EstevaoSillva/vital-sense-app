@@ -28,22 +28,16 @@ class SyncViewModel @Inject constructor(
             SyncAction.Load -> {
                 viewModelScope.launch {
                     val status = syncRepository.getSyncStatus()
-                    _uiState.value = _uiState.value.copy(
-                        description = "${status.deviceName} • bateria ${status.batteryPercent}% • ${status.lastSyncLabel}",
-                    )
+                    _uiState.value = _uiState.value.copy(status = status)
                 }
             }
             SyncAction.SyncNow -> {
                 viewModelScope.launch {
                     when (val result = syncRepository.syncNow()) {
                         is AppResult.Success -> {
-                            _uiState.value = _uiState.value.copy(
-                                description = "Última sincronização concluída • ${result.data.lastSyncLabel}",
-                            )
+                            _uiState.value = _uiState.value.copy(status = result.data)
                         }
-                        is AppResult.Error -> {
-                            _uiState.value = _uiState.value.copy(description = result.message)
-                        }
+                        is AppResult.Error -> Unit
                     }
                 }
             }

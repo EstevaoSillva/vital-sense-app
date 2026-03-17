@@ -1,8 +1,9 @@
 package com.mindsense.feature.history
 
+import com.mindsense.domain.model.CollectionSession
+
 data class HistoryUiState(
-    val title: String = "Histórico",
-    val description: String = "Lista de coletas fake pronta para virar `LazyColumn` com filtros na Fase 5.",
+    val collections: List<CollectionSession> = emptyList(),
 )
 
 sealed interface HistoryAction {

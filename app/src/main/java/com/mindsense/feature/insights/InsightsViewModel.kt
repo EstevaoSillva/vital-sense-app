@@ -27,7 +27,8 @@ class InsightsViewModel @Inject constructor(
             viewModelScope.launch {
                 val summary = insightsRepository.getInsightSummary()
                 _uiState.value = _uiState.value.copy(
-                    description = "Tendência ${summary.trendLabel.lowercase()} • ${summary.criticalFactors.size} fator(es) crítico(s).",
+                    summary = summary,
+                    recommendations = insightsRepository.getRecommendations(),
                 )
             }
         }

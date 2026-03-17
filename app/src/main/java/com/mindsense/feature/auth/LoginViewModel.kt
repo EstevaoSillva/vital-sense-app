@@ -19,9 +19,16 @@ class LoginViewModel @Inject constructor(
     val uiState: StateFlow<LoginUiState> = _uiState.asStateFlow()
 
     fun onAction(action: LoginAction) {
-        if (action is LoginAction.Submit) {
-            viewModelScope.launch {
-                authRepository.login(action.email, action.password)
+        when (action) {
+            is LoginAction.EmailChanged -> _uiState.value = _uiState.value.copy(email = action.value)
+            is LoginAction.PasswordChanged -> _uiState.value = _uiState.value.copy(password = action.value)
+            LoginAction.TogglePasswordVisibility -> _uiState.value = _uiState.value.copy(
+                showPassword = !_uiState.value.showPassword,
+            )
+            is LoginAction.Submit -> {
+                viewModelScope.launch {
+                    authRepository.login(action.email, action.password)
+                }
             }
         }
     }

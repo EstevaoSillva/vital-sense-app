@@ -1,8 +1,9 @@
 package com.mindsense.feature.sync
 
+import com.mindsense.domain.model.WatchSyncStatus
+
 data class SyncUiState(
-    val title: String = "Sincronização",
-    val description: String = "Camada de sync pronta com Room, DataStore e repositório fake para evolução futura.",
+    val status: WatchSyncStatus? = null,
 )
 
 sealed interface SyncAction {

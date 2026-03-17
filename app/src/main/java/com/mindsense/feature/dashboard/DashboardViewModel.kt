@@ -26,9 +26,7 @@ class DashboardViewModel @Inject constructor(
         if (action is DashboardAction.Load) {
             viewModelScope.launch {
                 val snapshot = dashboardRepository.getDashboardSnapshot()
-                _uiState.value = _uiState.value.copy(
-                    description = "Score atual ${snapshot.score} • ${snapshot.deviceName} • ${snapshot.lastSyncLabel}",
-                )
+                _uiState.value = _uiState.value.copy(snapshot = snapshot)
             }
         }
     }

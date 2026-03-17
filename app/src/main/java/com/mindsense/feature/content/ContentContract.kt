@@ -1,8 +1,9 @@
 package com.mindsense.feature.content
 
+import com.mindsense.domain.model.ArticleSummary
+
 data class ContentUiState(
-    val title: String = "Explorar",
-    val description: String = "Descoberta de conteúdo, busca e leitura já têm contratos de domínio e navegação pronta.",
+    val articles: List<ArticleSummary> = emptyList(),
 )
 
 sealed interface ContentAction {

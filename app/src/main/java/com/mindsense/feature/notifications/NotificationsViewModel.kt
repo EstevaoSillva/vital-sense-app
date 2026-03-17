@@ -25,10 +25,7 @@ class NotificationsViewModel @Inject constructor(
     fun onAction(action: NotificationsAction) {
         if (action is NotificationsAction.Load) {
             viewModelScope.launch {
-                val count = notificationRepository.getNotifications().size
-                _uiState.value = _uiState.value.copy(
-                    description = "Bootstrap com $count notificação(ões) fake e categorização pronta.",
-                )
+                _uiState.value = _uiState.value.copy(notifications = notificationRepository.getNotifications())
             }
         }
     }

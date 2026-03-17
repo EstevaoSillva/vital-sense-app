@@ -1,7 +1,9 @@
 package com.mindsense.feature.history
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mindsense.domain.model.CollectionDetail
 import com.mindsense.domain.repository.HistoryRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -11,22 +13,18 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 @HiltViewModel
-class HistoryViewModel @Inject constructor(
+class CollectionDetailViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
     private val historyRepository: HistoryRepository,
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(HistoryUiState())
-    val uiState: StateFlow<HistoryUiState> = _uiState.asStateFlow()
+    private val collectionId: String = savedStateHandle["collectionId"] ?: "1"
+    private val _detail = MutableStateFlow<CollectionDetail?>(null)
+    val detail: StateFlow<CollectionDetail?> = _detail.asStateFlow()
 
     init {
-        onAction(HistoryAction.Load)
-    }
-
-    fun onAction(action: HistoryAction) {
-        if (action is HistoryAction.Load) {
-            viewModelScope.launch {
-                _uiState.value = _uiState.value.copy(collections = historyRepository.getCollections())
-            }
+        viewModelScope.launch {
+            _detail.value = historyRepository.getCollectionDetail(collectionId)
         }
     }
 }

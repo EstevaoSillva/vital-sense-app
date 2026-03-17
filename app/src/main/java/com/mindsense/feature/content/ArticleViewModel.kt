@@ -1,7 +1,9 @@
 package com.mindsense.feature.content
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mindsense.domain.model.ArticleDetail
 import com.mindsense.domain.repository.ContentRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -11,22 +13,17 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 @HiltViewModel
-class ContentViewModel @Inject constructor(
+class ArticleViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
     private val contentRepository: ContentRepository,
 ) : ViewModel() {
-
-    private val _uiState = MutableStateFlow(ContentUiState())
-    val uiState: StateFlow<ContentUiState> = _uiState.asStateFlow()
+    private val articleId: String = savedStateHandle["articleId"] ?: "1"
+    private val _article = MutableStateFlow<ArticleDetail?>(null)
+    val article: StateFlow<ArticleDetail?> = _article.asStateFlow()
 
     init {
-        onAction(ContentAction.Load)
-    }
-
-    fun onAction(action: ContentAction) {
-        if (action is ContentAction.Load) {
-            viewModelScope.launch {
-                _uiState.value = _uiState.value.copy(articles = contentRepository.getFeaturedArticles())
-            }
+        viewModelScope.launch {
+            _article.value = contentRepository.getArticleDetail(articleId)
         }
     }
 }

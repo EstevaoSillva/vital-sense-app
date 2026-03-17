@@ -1,8 +1,11 @@
 package com.mindsense.feature.insights
 
+import com.mindsense.domain.model.InsightSummary
+import com.mindsense.domain.model.Recommendation
+
 data class InsightsUiState(
-    val title: String = "Insights",
-    val description: String = "Tendências, fatores críticos e recomendações já têm base de dados fake.",
+    val summary: InsightSummary? = null,
+    val recommendations: List<Recommendation> = emptyList(),
 )
 
 sealed interface InsightsAction {

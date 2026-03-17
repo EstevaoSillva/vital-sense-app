@@ -1,8 +1,9 @@
 package com.mindsense.feature.notifications
 
+import com.mindsense.domain.model.NotificationItem
+
 data class NotificationsUiState(
-    val title: String = "Notificações",
-    val description: String = "Categorias e feed já têm fonte fake e estrutura pronta para filtros reais.",
+    val notifications: List<NotificationItem> = emptyList(),
 )
 
 sealed interface NotificationsAction {

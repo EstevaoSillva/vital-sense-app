@@ -26,16 +26,16 @@ class AssessmentViewModel @Inject constructor(
         when (action) {
             AssessmentAction.Load -> {
                 viewModelScope.launch {
-                    val count = assessmentRepository.getQuestions().size
-                    _uiState.value = _uiState.value.copy(
-                        description = "Base com $count pergunta(s) fake e submissão desacoplada do composable.",
-                    )
+                    _uiState.value = _uiState.value.copy(questions = assessmentRepository.getQuestions())
                 }
             }
-            AssessmentAction.Submit -> {
-                viewModelScope.launch {
-                    assessmentRepository.submitAnswers(emptyMap())
-                }
+            is AssessmentAction.AnswerSelected -> {
+                _uiState.value = _uiState.value.copy(
+                    answers = _uiState.value.answers + (action.questionId to action.value),
+                )
+            }
+            AssessmentAction.Next -> {
+                _uiState.value = _uiState.value.copy(currentIndex = _uiState.value.currentIndex + 1)
             }
         }
     }

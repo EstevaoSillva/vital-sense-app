@@ -1,8 +1,9 @@
 package com.mindsense.feature.profile
 
+import com.mindsense.domain.model.UserProfile
+
 data class ProfileUiState(
-    val title: String = "Perfil",
-    val description: String = "Dados do usuário, preferências e logout já têm ponto de extensão definido.",
+    val profile: UserProfile? = null,
 )
 
 sealed interface ProfileAction {

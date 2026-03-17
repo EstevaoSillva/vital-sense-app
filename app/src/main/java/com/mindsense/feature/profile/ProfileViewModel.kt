@@ -29,9 +29,7 @@ class ProfileViewModel @Inject constructor(
             ProfileAction.Load -> {
                 viewModelScope.launch {
                     val profile = profileRepository.getProfile()
-                    _uiState.value = _uiState.value.copy(
-                        description = "${profile.name} • ${profile.jobTitle} • ${profile.company}",
-                    )
+                    _uiState.value = _uiState.value.copy(profile = profile)
                 }
             }
             ProfileAction.Logout -> {

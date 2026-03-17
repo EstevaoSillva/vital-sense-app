@@ -1,8 +1,9 @@
 package com.mindsense.feature.dashboard
 
+import com.mindsense.domain.model.StressSnapshot
+
 data class DashboardUiState(
-    val title: String = "Dashboard",
-    val description: String = "Resumo inicial conectado ao repositório fake e pronto para receber os cards reais.",
+    val snapshot: StressSnapshot? = null,
 )
 
 sealed interface DashboardAction {

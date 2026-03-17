@@ -1,11 +1,15 @@
 package com.mindsense.feature.assessment
 
+import com.mindsense.domain.model.AssessmentQuestion
+
 data class AssessmentUiState(
-    val title: String = "Assessment",
-    val description: String = "Questionário e resultado consolidado já têm modelos e contrato de submissão fake.",
+    val questions: List<AssessmentQuestion> = emptyList(),
+    val currentIndex: Int = 0,
+    val answers: Map<String, Int> = emptyMap(),
 )
 
 sealed interface AssessmentAction {
     data object Load : AssessmentAction
-    data object Submit : AssessmentAction
+    data class AnswerSelected(val questionId: String, val value: Int) : AssessmentAction
+    data object Next : AssessmentAction
 }

@@ -9,6 +9,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.mindsense.core.designsystem.theme.MindSenseThemeTokens
 
 @Composable
 fun PrimaryButton(
@@ -20,14 +21,17 @@ fun PrimaryButton(
     Button(
         onClick = onClick,
         enabled = enabled,
+        shape = MindSenseThemeTokens.shapes.button,
         modifier = modifier
             .fillMaxWidth()
             .height(54.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.primary,
             contentColor = MaterialTheme.colorScheme.onPrimary,
+            disabledContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.35f),
+            disabledContentColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.7f),
         ),
     ) {
-        Text(text = text, style = MaterialTheme.typography.bodyLarge)
+        Text(text = text, style = MaterialTheme.typography.labelLarge)
     }
 }

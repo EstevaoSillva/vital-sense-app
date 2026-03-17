@@ -2,8 +2,6 @@ package com.mindsense.core.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -12,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.mindsense.core.designsystem.components.AppCard
 import com.mindsense.core.designsystem.components.PrimaryButton
+import com.mindsense.core.designsystem.components.SectionHeader
 import com.mindsense.core.designsystem.theme.MindSenseThemeTokens
 
 @Composable
@@ -28,7 +27,7 @@ fun FeaturePlaceholderContent(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         AppCard {
-            Text(text = title, style = MaterialTheme.typography.headlineMedium)
+            SectionHeader(title = title)
             Text(
                 text = description,
                 style = MaterialTheme.typography.bodyMedium,

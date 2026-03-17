@@ -6,48 +6,43 @@ import androidx.compose.material.icons.rounded.BarChart
 import androidx.compose.material.icons.rounded.History
 import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.Search
-import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.mindsense.core.navigation.BottomDestination
+import com.mindsense.core.designsystem.components.BottomNavItem
+import com.mindsense.core.designsystem.components.MindSenseBottomNavigation
 
 @Composable
 fun MindSenseBottomBar(navController: NavHostController) {
     val backStackEntry = navController.currentBackStackEntryAsState().value
     val currentRoute = backStackEntry?.destination
 
-    NavigationBar {
-        BottomDestination.entries.forEach { destination ->
-            NavigationBarItem(
-                selected = currentRoute?.hierarchy?.any { it.route == destination.route } == true,
-                onClick = {
-                    navController.navigate(destination.route) {
-                        popUpTo(navController.graph.startDestinationId) {
-                            saveState = true
-                        }
-                        launchSingleTop = true
-                        restoreState = true
-                    }
-                },
-                icon = {
-                    Icon(
-                        imageVector = destination.icon,
-                        contentDescription = destination.label,
-                    )
-                },
-                label = { Text(destination.label) },
+    MindSenseBottomNavigation(
+        items = BottomDestination.entries.map { destination ->
+            BottomNavItem(
+                route = destination.route,
+                label = destination.label,
+                icon = destination.icon,
             )
+        },
+        selectedRoute = BottomDestination.entries.firstOrNull { destination ->
+            currentRoute?.hierarchy?.any { it.route == destination.route } == true
+        }?.route,
+        onItemSelected = { item ->
+            navController.navigate(item.route) {
+                popUpTo(navController.graph.startDestinationId) {
+                    saveState = true
+                }
+                launchSingleTop = true
+                restoreState = true
+            }
         }
-    }
+    )
 }
 
-internal val BottomDestination.icon: ImageVector
+internal val BottomDestination.icon: androidx.compose.ui.graphics.vector.ImageVector
     get() = when (this) {
         BottomDestination.Dashboard -> Icons.Rounded.Home
         BottomDestination.History -> Icons.Rounded.History

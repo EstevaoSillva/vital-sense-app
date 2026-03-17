@@ -19,8 +19,9 @@ fun AppCard(
 ) {
     Card(
         modifier = modifier,
+        shape = MindSenseThemeTokens.shapes.card,
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+        border = BorderStroke(1.dp, MindSenseThemeTokens.extendedColors.cardBorder),
         elevation = CardDefaults.cardElevation(defaultElevation = MindSenseThemeTokens.elevation.card),
     ) {
         Column(modifier = Modifier.padding(MindSenseThemeTokens.spacing.lg), content = content)

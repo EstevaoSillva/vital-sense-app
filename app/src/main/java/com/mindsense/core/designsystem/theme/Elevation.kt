@@ -9,6 +9,7 @@ import androidx.compose.ui.unit.dp
 data class MindSenseElevation(
     val card: Dp = 10.dp,
     val floating: Dp = 16.dp,
+    val glow: Dp = 22.dp,
 )
 
 val LocalMindSenseElevation = staticCompositionLocalOf { MindSenseElevation() }

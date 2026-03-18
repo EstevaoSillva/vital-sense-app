@@ -1,5 +1,7 @@
 package com.mindsense.feature.dashboard
 
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -50,6 +52,7 @@ fun DashboardScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
+                .verticalScroll(rememberScrollState())
                 .padding(MindSenseThemeTokens.spacing.lg),
             verticalArrangement = Arrangement.spacedBy(MindSenseThemeTokens.spacing.md),
         ) {

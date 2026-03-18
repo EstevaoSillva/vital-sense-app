@@ -69,7 +69,10 @@ class DashboardRepositoryImpl @Inject constructor() : DashboardRepository {
 @Singleton
 class HistoryRepositoryImpl @Inject constructor() : HistoryRepository {
     override suspend fun getCollections(): List<CollectionSession> = FakeSeedData.collections
-    override suspend fun getCollectionDetail(id: String): CollectionDetail? = FakeSeedData.collectionDetail
+    override suspend fun getCollectionDetail(id: String): CollectionDetail? {
+        val session = FakeSeedData.collections.firstOrNull { it.id == id } ?: return null
+        return FakeSeedData.collectionDetail.copy(session = session)
+    }
 }
 
 @Singleton
@@ -86,7 +89,18 @@ class ProfileRepositoryImpl @Inject constructor() : ProfileRepository {
 @Singleton
 class ContentRepositoryImpl @Inject constructor() : ContentRepository {
     override suspend fun getFeaturedArticles(): List<ArticleSummary> = FakeSeedData.articles
-    override suspend fun getArticleDetail(id: String): ArticleDetail = FakeSeedData.articleDetail
+    override suspend fun getArticleDetail(id: String): ArticleDetail {
+        val article = FakeSeedData.articles.firstOrNull { it.id == id }
+        return if (article != null) {
+            FakeSeedData.articleDetail.copy(
+                id = article.id,
+                title = article.title,
+                category = article.category,
+            )
+        } else {
+            FakeSeedData.articleDetail
+        }
+    }
 }
 
 @Singleton

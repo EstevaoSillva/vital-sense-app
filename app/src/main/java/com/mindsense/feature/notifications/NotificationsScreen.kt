@@ -17,6 +17,7 @@ import com.mindsense.core.designsystem.components.SectionHeader
 import com.mindsense.core.designsystem.components.StatusChip
 import com.mindsense.core.designsystem.components.StatusChipTone
 import com.mindsense.core.designsystem.theme.MindSenseThemeTokens
+import com.mindsense.core.ui.feedback.EmptyState
 import com.mindsense.core.ui.scaffold.MindSenseScaffold
 
 @Composable
@@ -39,9 +40,19 @@ fun NotificationsScreen(
             item {
                 FilterChipGroup(
                     options = listOf("Todos", "Stress", "Burnout", "Assessment", "Sync"),
-                    selected = "Todos",
-                    onSelected = {},
+                    selected = state.selectedFilter,
+                    onSelected = { viewModel.onAction(NotificationsAction.FilterChanged(it)) },
                 )
+            }
+            if (state.notifications.isEmpty()) {
+                item {
+                    EmptyState(
+                        title = "Sem notificações",
+                        description = "Nenhum alerta encontrado para esse filtro.",
+                        actionLabel = "Ver todas",
+                        onAction = { viewModel.onAction(NotificationsAction.FilterChanged("Todos")) },
+                    )
+                }
             }
             items(state.notifications) { notification ->
                 AppCard {

@@ -1,7 +1,6 @@
 package com.mindsense.feature.content
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -9,10 +8,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -24,16 +19,16 @@ import com.mindsense.core.designsystem.components.SectionHeader
 import com.mindsense.core.designsystem.components.StatusChip
 import com.mindsense.core.designsystem.components.StatusChipTone
 import com.mindsense.core.designsystem.theme.MindSenseThemeTokens
+import com.mindsense.core.ui.feedback.EmptyState
 import com.mindsense.core.ui.scaffold.MindSenseScaffold
 
 @Composable
 fun ExploreScreen(
     navController: NavHostController,
-    onOpenArticle: () -> Unit,
+    onOpenArticle: (String) -> Unit,
     viewModel: ContentViewModel = hiltViewModel(),
 ) {
     val state = viewModel.uiState.collectAsStateWithLifecycle().value
-    var query by remember { mutableStateOf("") }
     MindSenseScaffold(
         navController = navController,
         showBottomBar = true,
@@ -46,17 +41,30 @@ fun ExploreScreen(
             item { SectionHeader(title = "Explorar") }
             item {
                 SearchBar(
-                    value = query,
-                    onValueChange = { query = it },
+                    value = state.query,
+                    onValueChange = { viewModel.onAction(ContentAction.QueryChanged(it)) },
                     placeholder = "Pesquisar sobre burnout, stress...",
                 )
             }
             item {
                 FilterChipGroup(
-                    options = listOf("O que é burnout", "Sintomas", "Prevenção", "Sono"),
-                    selected = "O que é burnout",
-                    onSelected = {},
+                    options = listOf("Todos", "Bem-estar", "Prevenção"),
+                    selected = state.selectedCategory,
+                    onSelected = { viewModel.onAction(ContentAction.CategorySelected(it)) },
                 )
+            }
+            if (state.articles.isEmpty()) {
+                item {
+                    EmptyState(
+                        title = "Nenhum conteúdo encontrado",
+                        description = "Tente outro termo ou remova os filtros aplicados.",
+                        actionLabel = "Limpar filtros",
+                        onAction = {
+                            viewModel.onAction(ContentAction.QueryChanged(""))
+                            viewModel.onAction(ContentAction.CategorySelected("Todos"))
+                        },
+                    )
+                }
             }
             items(state.articles) { article ->
                 AppCard(modifier = Modifier.fillMaxWidth()) {
@@ -67,7 +75,7 @@ fun ExploreScreen(
                         tone = StatusChipTone.Info,
                         modifier = Modifier.padding(top = MindSenseThemeTokens.spacing.sm),
                     )
-                    androidx.compose.material3.TextButton(onClick = onOpenArticle) {
+                    androidx.compose.material3.TextButton(onClick = { onOpenArticle(article.id) }) {
                         Text("Abrir artigo")
                     }
                 }

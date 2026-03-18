@@ -1,5 +1,7 @@
 package com.mindsense.feature.assessment
 
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,6 +30,7 @@ fun AssessmentScreen(
 ) {
     val state = viewModel.uiState.collectAsStateWithLifecycle().value
     val question = state.questions.getOrNull(state.currentIndex) ?: return
+    val selectedAnswer = state.answers[question.id]
     MindSenseScaffold(
         navController = navController,
         onBackClick = onBack,
@@ -36,6 +39,7 @@ fun AssessmentScreen(
             modifier = Modifier
                 .padding(padding)
                 .fillMaxSize()
+                .verticalScroll(rememberScrollState())
                 .padding(MindSenseThemeTokens.spacing.lg),
             verticalArrangement = Arrangement.spacedBy(MindSenseThemeTokens.spacing.lg),
         ) {
@@ -47,17 +51,35 @@ fun AssessmentScreen(
             Text(question.text, style = MaterialTheme.typography.headlineMedium)
             Column(verticalArrangement = Arrangement.spacedBy(MindSenseThemeTokens.spacing.sm)) {
                 question.scaleLabels.forEachIndexed { index, label ->
-                    SecondaryButton(
-                        text = "${index + 1}. $label",
-                        onClick = { viewModel.onAction(AssessmentAction.AnswerSelected(question.id, index + 1)) },
-                    )
+                    val optionValue = index + 1
+                    if (selectedAnswer == optionValue) {
+                        PrimaryButton(
+                            text = "${optionValue}. $label",
+                            onClick = { viewModel.onAction(AssessmentAction.AnswerSelected(question.id, optionValue)) },
+                        )
+                    } else {
+                        SecondaryButton(
+                            text = "${optionValue}. $label",
+                            onClick = { viewModel.onAction(AssessmentAction.AnswerSelected(question.id, optionValue)) },
+                        )
+                    }
                 }
+            }
+            state.validationMessage?.let {
+                Text(
+                    text = it,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.error,
+                )
             }
             PrimaryButton(
                 text = if (state.currentIndex == state.questions.lastIndex) "Enviar respostas" else "Próxima",
                 onClick = {
-                    if (state.currentIndex == state.questions.lastIndex) onFinish()
-                    else viewModel.onAction(AssessmentAction.Next)
+                    if (state.currentIndex == state.questions.lastIndex) {
+                        if (selectedAnswer == null) viewModel.onAction(AssessmentAction.Next) else onFinish()
+                    } else {
+                        viewModel.onAction(AssessmentAction.Next)
+                    }
                 },
             )
         }
@@ -80,6 +102,7 @@ fun AssessmentResultPlaceholderScreen(
             modifier = Modifier
                 .padding(padding)
                 .fillMaxSize()
+                .verticalScroll(rememberScrollState())
                 .padding(MindSenseThemeTokens.spacing.lg),
             verticalArrangement = Arrangement.spacedBy(MindSenseThemeTokens.spacing.md),
         ) {

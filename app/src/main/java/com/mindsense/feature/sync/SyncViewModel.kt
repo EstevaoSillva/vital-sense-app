@@ -28,18 +28,35 @@ class SyncViewModel @Inject constructor(
             SyncAction.Load -> {
                 viewModelScope.launch {
                     val status = syncRepository.getSyncStatus()
-                    _uiState.value = _uiState.value.copy(status = status)
+                    _uiState.value = _uiState.value.copy(status = status, infoMessage = null)
                 }
             }
             SyncAction.SyncNow -> {
                 viewModelScope.launch {
+                    _uiState.value = _uiState.value.copy(infoMessage = "Sincronizando dados com o relógio...")
                     when (val result = syncRepository.syncNow()) {
                         is AppResult.Success -> {
-                            _uiState.value = _uiState.value.copy(status = result.data)
+                            _uiState.value = _uiState.value.copy(
+                                status = result.data,
+                                infoMessage = "Sincronização concluída com sucesso.",
+                            )
                         }
-                        is AppResult.Error -> Unit
+                        is AppResult.Error -> {
+                            _uiState.value = _uiState.value.copy(infoMessage = result.message)
+                        }
                     }
                 }
+            }
+            SyncAction.TestConnection -> {
+                val connected = _uiState.value.status?.isConnected == true
+                _uiState.value = _uiState.value.copy(
+                    infoMessage = if (connected) "Conexão com o wearable está estável." else "Nenhum wearable conectado no momento.",
+                )
+            }
+            SyncAction.OpenSettings -> {
+                _uiState.value = _uiState.value.copy(
+                    infoMessage = "Configuração local pronta para integração com permissões do Android.",
+                )
             }
         }
     }

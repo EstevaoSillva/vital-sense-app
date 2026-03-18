@@ -8,10 +8,14 @@ import com.mindsense.core.designsystem.components.EmptyState as DsEmptyState
 fun EmptyState(
     title: String,
     description: String,
+    actionLabel: String? = null,
+    onAction: (() -> Unit)? = null,
 ) {
     DsEmptyState(
         title = title,
         description = description,
         modifier = Modifier,
+        actionLabel = actionLabel,
+        onActionClick = onAction,
     )
 }

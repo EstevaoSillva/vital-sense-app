@@ -23,10 +23,38 @@ class ContentViewModel @Inject constructor(
     }
 
     fun onAction(action: ContentAction) {
-        if (action is ContentAction.Load) {
-            viewModelScope.launch {
-                _uiState.value = _uiState.value.copy(articles = contentRepository.getFeaturedArticles())
+        when (action) {
+            ContentAction.Load -> {
+                viewModelScope.launch {
+                    val articles = contentRepository.getFeaturedArticles()
+                    _uiState.value = _uiState.value.copy(
+                        allArticles = articles,
+                        articles = articles,
+                    )
+                }
+            }
+            is ContentAction.QueryChanged -> {
+                _uiState.value = _uiState.value.copy(query = action.value)
+                applyFilters()
+            }
+            is ContentAction.CategorySelected -> {
+                _uiState.value = _uiState.value.copy(selectedCategory = action.value)
+                applyFilters()
             }
         }
+    }
+
+    private fun applyFilters() {
+        val state = _uiState.value
+        val normalizedQuery = state.query.trim()
+        val filtered = state.allArticles.filter { article ->
+            val matchesQuery = normalizedQuery.isBlank() ||
+                article.title.contains(normalizedQuery, ignoreCase = true) ||
+                article.category.contains(normalizedQuery, ignoreCase = true)
+            val matchesCategory = state.selectedCategory == "Todos" ||
+                article.category.equals(state.selectedCategory, ignoreCase = true)
+            matchesQuery && matchesCategory
+        }
+        _uiState.value = state.copy(articles = filtered)
     }
 }

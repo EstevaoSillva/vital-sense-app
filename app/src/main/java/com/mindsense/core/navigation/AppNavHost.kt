@@ -60,8 +60,8 @@ fun AppNavHost(modifier: Modifier = Modifier) {
         composable(AppDestination.History.route) {
             HistoryScreen(
                 navController = navController,
-                onOpenCollection = {
-                    navController.navigate(AppDestination.CollectionDetail.createRoute("1"))
+                onOpenCollection = { collectionId ->
+                    navController.navigate(AppDestination.CollectionDetail.createRoute(collectionId))
                 },
             )
         }
@@ -89,7 +89,7 @@ fun AppNavHost(modifier: Modifier = Modifier) {
         composable(AppDestination.Explore.route) {
             ExploreScreen(
                 navController = navController,
-                onOpenArticle = { navController.navigate(AppDestination.Article.createRoute("1")) },
+                onOpenArticle = { articleId -> navController.navigate(AppDestination.Article.createRoute(articleId)) },
             )
         }
         composable(

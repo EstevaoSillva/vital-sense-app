@@ -1,6 +1,8 @@
 package com.mindsense.feature.onboarding
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.BluetoothSearching
 import androidx.compose.material.icons.rounded.BluetoothSearching
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.Insights
@@ -57,7 +60,7 @@ fun OnboardingScreen(
             color = MaterialTheme.colorScheme.primary,
         ),
         OnboardingSlide(
-            icon = Icons.Rounded.BluetoothSearching,
+            icon = Icons.AutoMirrored.Rounded.BluetoothSearching,
             title = "Celular e relógio conectados",
             description = "Sincronize dados com seu smartwatch e leve resumos para o pulso.",
             color = MaterialTheme.colorScheme.error,
@@ -68,6 +71,7 @@ fun OnboardingScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .verticalScroll(rememberScrollState())
             .padding(MindSenseThemeTokens.spacing.lg),
         verticalArrangement = Arrangement.SpaceBetween,
     ) {

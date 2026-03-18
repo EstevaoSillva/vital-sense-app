@@ -48,6 +48,14 @@ fun SyncScreen(
                     )
                     Text("Bateria ${status.batteryPercent}%", style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(top = MindSenseThemeTokens.spacing.sm))
                     Text(status.lastSyncLabel, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    state.infoMessage?.let {
+                        Text(
+                            text = it,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.padding(top = MindSenseThemeTokens.spacing.sm),
+                        )
+                    }
                 }
             }
             item {
@@ -61,8 +69,8 @@ fun SyncScreen(
                 }
             }
             item { PrimaryButton(text = "Sincronizar agora", onClick = { viewModel.onAction(SyncAction.SyncNow) }) }
-            item { SecondaryButton(text = "Testar conexão", onClick = {}) }
-            item { SecondaryButton(text = "Configurar dados do relógio", onClick = {}) }
+            item { SecondaryButton(text = "Testar conexão", onClick = { viewModel.onAction(SyncAction.TestConnection) }) }
+            item { SecondaryButton(text = "Configurar dados do relógio", onClick = { viewModel.onAction(SyncAction.OpenSettings) }) }
         }
     }
 }

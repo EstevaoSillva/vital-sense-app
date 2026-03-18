@@ -1,6 +1,8 @@
 package com.mindsense.feature.auth
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,6 +18,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
@@ -34,9 +37,14 @@ fun LoginScreen(
     viewModel: LoginViewModel = hiltViewModel(),
 ) {
     val state = viewModel.uiState.collectAsStateWithLifecycle().value
+    LaunchedEffect(state.isAuthenticated) {
+        if (state.isAuthenticated) onLoginSuccess()
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .verticalScroll(rememberScrollState())
             .padding(horizontal = MindSenseThemeTokens.spacing.lg, vertical = MindSenseThemeTokens.spacing.xxl),
         verticalArrangement = Arrangement.SpaceBetween,
     ) {
@@ -76,6 +84,13 @@ fun LoginScreen(
                 label = "E-mail",
                 placeholder = "seu@email.com",
             )
+            state.emailError?.let {
+                Text(
+                    text = it,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.error,
+                )
+            }
             InputField(
                 value = state.password,
                 onValueChange = { viewModel.onAction(LoginAction.PasswordChanged(it)) },
@@ -91,6 +106,13 @@ fun LoginScreen(
                     }
                 },
             )
+            state.passwordError?.let {
+                Text(
+                    text = it,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.error,
+                )
+            }
             Text(
                 text = "Esqueci minha senha",
                 style = MaterialTheme.typography.labelMedium,
@@ -98,19 +120,25 @@ fun LoginScreen(
                 modifier = Modifier.align(Alignment.End),
             )
             PrimaryButton(
-                text = "Entrar",
+                text = if (state.isSubmitting) "Entrando..." else "Entrar",
                 onClick = {
                     viewModel.onAction(LoginAction.Submit(state.email, state.password))
-                    onLoginSuccess()
                 },
+                enabled = !state.isSubmitting,
             )
             SecondaryButton(
                 text = "Entrar com biometria",
                 onClick = {
                     viewModel.onAction(LoginAction.Submit(state.email, state.password))
-                    onLoginSuccess()
                 },
             )
+            state.submitError?.let {
+                Text(
+                    text = it,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.error,
+                )
+            }
         }
         Text(
             text = "Seus dados são protegidos com criptografia de ponta a ponta.",

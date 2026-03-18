@@ -22,12 +22,13 @@ import com.mindsense.core.designsystem.components.SectionHeader
 import com.mindsense.core.designsystem.components.StatusChip
 import com.mindsense.core.designsystem.components.StatusChipTone
 import com.mindsense.core.designsystem.theme.MindSenseThemeTokens
+import com.mindsense.core.ui.feedback.EmptyState
 import com.mindsense.core.ui.scaffold.MindSenseScaffold
 
 @Composable
 fun HistoryScreen(
     navController: NavHostController,
-    onOpenCollection: () -> Unit,
+    onOpenCollection: (String) -> Unit,
     viewModel: HistoryViewModel = hiltViewModel(),
 ) {
     val state = viewModel.uiState.collectAsStateWithLifecycle().value
@@ -46,9 +47,19 @@ fun HistoryScreen(
             item {
                 FilterChipGroup(
                     options = listOf("Hoje", "7 dias", "30 dias", "Todos"),
-                    selected = "Todos",
-                    onSelected = {},
+                    selected = state.selectedFilter,
+                    onSelected = { viewModel.onAction(HistoryAction.FilterChanged(it)) },
                 )
+            }
+            if (state.collections.isEmpty()) {
+                item {
+                    EmptyState(
+                        title = "Nenhuma coleta encontrada",
+                        description = "Ajuste o período para visualizar outras sessões.",
+                        actionLabel = "Ver todas",
+                        onAction = { viewModel.onAction(HistoryAction.FilterChanged("Todos")) },
+                    )
+                }
             }
             items(state.collections) { item ->
                 AppCard(modifier = Modifier.fillMaxWidth()) {
@@ -73,7 +84,7 @@ fun HistoryScreen(
                         modifier = Modifier.padding(top = MindSenseThemeTokens.spacing.sm),
                     )
                     androidx.compose.material3.TextButton(
-                        onClick = onOpenCollection,
+                        onClick = { onOpenCollection(item.id) },
                         modifier = Modifier.padding(top = MindSenseThemeTokens.spacing.sm),
                     ) { Text("Abrir detalhe") }
                 }

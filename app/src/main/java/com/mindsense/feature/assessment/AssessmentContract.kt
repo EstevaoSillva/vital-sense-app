@@ -6,6 +6,7 @@ data class AssessmentUiState(
     val questions: List<AssessmentQuestion> = emptyList(),
     val currentIndex: Int = 0,
     val answers: Map<String, Int> = emptyMap(),
+    val validationMessage: String? = null,
 )
 
 sealed interface AssessmentAction {

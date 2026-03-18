@@ -4,6 +4,11 @@ data class LoginUiState(
     val email: String = "",
     val password: String = "",
     val showPassword: Boolean = false,
+    val emailError: String? = null,
+    val passwordError: String? = null,
+    val submitError: String? = null,
+    val isSubmitting: Boolean = false,
+    val isAuthenticated: Boolean = false,
 )
 
 sealed interface LoginAction {

@@ -23,9 +23,28 @@ class HistoryViewModel @Inject constructor(
     }
 
     fun onAction(action: HistoryAction) {
-        if (action is HistoryAction.Load) {
-            viewModelScope.launch {
-                _uiState.value = _uiState.value.copy(collections = historyRepository.getCollections())
+        when (action) {
+            HistoryAction.Load -> {
+                viewModelScope.launch {
+                    val collections = historyRepository.getCollections()
+                    _uiState.value = _uiState.value.copy(
+                        allCollections = collections,
+                        collections = collections,
+                    )
+                }
+            }
+            is HistoryAction.FilterChanged -> {
+                val source = _uiState.value.allCollections
+                val filtered = when (action.value) {
+                    "Hoje" -> source.filter { it.timestamp.contains("Hoje", ignoreCase = true) }
+                    "7 dias" -> source.take(2)
+                    "30 dias" -> source
+                    else -> source
+                }
+                _uiState.value = _uiState.value.copy(
+                    selectedFilter = action.value,
+                    collections = filtered,
+                )
             }
         }
     }

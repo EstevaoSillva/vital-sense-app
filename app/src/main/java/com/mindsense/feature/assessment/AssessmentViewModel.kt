@@ -32,10 +32,22 @@ class AssessmentViewModel @Inject constructor(
             is AssessmentAction.AnswerSelected -> {
                 _uiState.value = _uiState.value.copy(
                     answers = _uiState.value.answers + (action.questionId to action.value),
+                    validationMessage = null,
                 )
             }
             AssessmentAction.Next -> {
-                _uiState.value = _uiState.value.copy(currentIndex = _uiState.value.currentIndex + 1)
+                val state = _uiState.value
+                val question = state.questions.getOrNull(state.currentIndex) ?: return
+                if (state.answers[question.id] == null) {
+                    _uiState.value = state.copy(validationMessage = "Selecione uma resposta antes de continuar.")
+                    return
+                }
+                if (state.currentIndex < state.questions.lastIndex) {
+                    _uiState.value = state.copy(
+                        currentIndex = state.currentIndex + 1,
+                        validationMessage = null,
+                    )
+                }
             }
         }
     }

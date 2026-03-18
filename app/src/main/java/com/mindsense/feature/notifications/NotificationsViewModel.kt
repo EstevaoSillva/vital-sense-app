@@ -23,9 +23,28 @@ class NotificationsViewModel @Inject constructor(
     }
 
     fun onAction(action: NotificationsAction) {
-        if (action is NotificationsAction.Load) {
-            viewModelScope.launch {
-                _uiState.value = _uiState.value.copy(notifications = notificationRepository.getNotifications())
+        when (action) {
+            NotificationsAction.Load -> {
+                viewModelScope.launch {
+                    val notifications = notificationRepository.getNotifications()
+                    _uiState.value = _uiState.value.copy(
+                        allNotifications = notifications,
+                        notifications = notifications,
+                    )
+                }
+            }
+            is NotificationsAction.FilterChanged -> {
+                val filtered = if (action.value == "Todos") {
+                    _uiState.value.allNotifications
+                } else {
+                    _uiState.value.allNotifications.filter {
+                        it.category.equals(action.value, ignoreCase = true)
+                    }
+                }
+                _uiState.value = _uiState.value.copy(
+                    selectedFilter = action.value,
+                    notifications = filtered,
+                )
             }
         }
     }
